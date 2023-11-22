@@ -1,5 +1,11 @@
 const express = require("express");
 require("dotenv").config();
+const mongoose = require("mongoose");
+
+const userManagementRoutes = require("./routes/userManagement");
+const conversationManagementRoutes = require("./routes/conversationManagement");
+const agentManagementRoutes = require("./routes/agentManagement");
+const messageManagementRoutes = require("./routes/messageManagement");
 
 const app = express();
 
@@ -8,11 +14,27 @@ app.use((req, res, next) => {
   console.log(req.path, req.method);
   next();
 });
-
+// middle for post requests
+app.use(express.json());
 
 //routes
+app.use("/api/users", userManagementRoutes);
+app.use("/api/conversations", conversationManagementRoutes);
+app.use("/api/agents", agentManagementRoutes);
+app.use("/api/messages", messageManagementRoutes);
 
-// listener
-app.listen(process.env.PORT, () => {
-  console.log("listening on port to server");
-});
+//connect to DB
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    // listener
+    app.listen(process.env.PORT, () => {
+      console.log("connected to db & listening to server");
+    });
+  })
+  .catch((error) => {
+    console.log("error: " + error);
+  });
+
+
+
