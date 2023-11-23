@@ -1,0 +1,10 @@
+.agent{
+justify-self: start;
+
+  background-color: pink;
+}
+
+.costumer{
+justify-self: end;
+  background-color: lightblue;
+}

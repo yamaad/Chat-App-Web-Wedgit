@@ -1,0 +1,9 @@
+.conversation-panel{
+  display: grid;
+  grid-row-start: 2;
+  grid-row-end: 11;
+  grid-column-start: 1;
+  grid-column-end: 2;
+  justify-self: stretch;
+  border-style: solid;
+}

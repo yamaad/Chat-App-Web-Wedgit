@@ -1,0 +1,16 @@
+.chat-Interface {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  padding: 15px;
+
+}
+.chat-Interface-header{
+  display: grid;
+  grid-row-start: 1;
+  grid-row-end: 2;
+  grid-column-start: 1;
+  grid-column-end: 4;
+  justify-self: stretch;
+}

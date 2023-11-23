@@ -1,0 +1,20 @@
+.chatbot-inputs{
+  display: flex;
+justify-content: flex-start;
+}
+h3{
+  margin-bottom: 0;
+}
+.settings .chatbot-inputs{
+  padding-top: 0;
+}
+ .chatbot-inputs> label {
+  padding-right: 150px;
+  flex-grow: 1;
+
+}
+
+.chatbot-inputs input{
+display: block;
+width: 100%;
+}

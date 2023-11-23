@@ -1,0 +1,14 @@
+header .navbar {
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+header a {
+  color: #333;
+  text-decoration: none;
+  
+}
+
+
