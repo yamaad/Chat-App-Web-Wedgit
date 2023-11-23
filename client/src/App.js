@@ -1,19 +1,7 @@
-// src/App.js
-import React, { useState } from "react";
-import ChatBubble from "./components/ChatBubble/ChatBubble";
-import ChatWindow from "./components/ChatWindow/chatWindow";
-
 function App() {
-  const [isChatOpen, setIsChatOpen] = useState(false);
-
-  const toggleChat = () => {
-    setIsChatOpen(!isChatOpen);
-  };
-
   return (
     <div className="App">
-      <ChatBubble onClick={toggleChat} />
-      <ChatWindow isOpen={isChatOpen} onClose={toggleChat} />
+      <h1> FOR AGENT CHAT CHAT INTERFACE</h1>
     </div>
   );
 }
