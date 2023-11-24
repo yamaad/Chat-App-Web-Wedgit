@@ -3,9 +3,10 @@ import "./ChatBox.css";
 const ChatBox = ({ messages }) => {
   return (
     <div className="chat-box">
-      {messages.map((message, index) => {
-        return <Message key={index} message={message} />;
-      })}
+      {messages &&
+        messages.map((message, index) => {
+          return <Message key={index} message={message} />;
+        })}
     </div>
   );
 };
