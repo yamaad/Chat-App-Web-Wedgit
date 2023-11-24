@@ -7,10 +7,16 @@ const mongoose = require("mongoose");
 const createAgent = async (req, res) => {
   const { username } = req.body;
   try {
-    const agent = await Agent.create({
-      username,
-    });
-    res.status(200).json(agent);
+    const existingAgent = await Agent.findOne({ username });
+
+    if (existingAgent) {
+      res.status(200).json(existingAgent);
+    } else {
+      const agent = await Agent.create({
+        username,
+      });
+      res.status(201).json(agent);
+    }
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
