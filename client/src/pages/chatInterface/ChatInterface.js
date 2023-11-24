@@ -44,6 +44,7 @@ const ChatInterface = () => {
       fetchConversations();
     }
   }, [agents]);
+
   return (
     <>
       <Navbar path={"/"} page={"Setting Page"} />
