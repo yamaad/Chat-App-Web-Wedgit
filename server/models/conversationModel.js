@@ -3,14 +3,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const conversationSchema = new Schema({
-  uid: {
-    type: mongoose.Schema.Types.ObjectId,
-    default: () => {
-      return new mongoose.Types.ObjectId();
-    },
-    required: true,
-    unique: true,
-  },
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

@@ -41,7 +41,6 @@ const assignConversation = async (req, res) => {
 //get conversations assigned to agent
 const getAgentConversations = async (req, res) => {
   const { agentId } = req.params;
-  console.log(agentId);
   if (!mongoose.Types.ObjectId.isValid(agentId)) {
     return res.status(404).json({ error: "No valid id" });
   }
