@@ -8,6 +8,11 @@ const conversationSchema = new Schema({
     ref: "User",
     required: true,
   },
+  agent_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Agent",
+    required: true,
+  },
   start_time: {
     type: Date,
     required: true,
