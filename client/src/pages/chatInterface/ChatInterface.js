@@ -4,6 +4,8 @@ import ChatBox from "../../components/chatBox/ChatBox";
 import ConversationPanel from "../../components/conversationsPanel/ConversationsPanel";
 import Navbar from "../../components/navbar/Navbar";
 import "./ChatInterface.css";
+import { AgentLogin } from "../../components/agentLogin/AgentLogin";
+import { useSelector } from "react-redux";
 
 const messages = [
   { content: "text1", sentAt: "2pm 12/14", sender: true },
@@ -14,28 +16,14 @@ const messages = [
   { content: "text6", sentAt: "2pm 12/14", sender: false },
 ];
 const ChatInterface = () => {
-  const [agents, setAgents] = useState(null);
   const [conversations, setConversations] = useState(null);
-
-  //fetch online agents
-  useEffect(() => {
-    const fetchAgents = async () => {
-      const response = await fetch("/api/agents/online");
-      const json = await response.json();
-      if (response.ok) {
-        setAgents(json);
-      }
-    };
-    fetchAgents();
-  }, []);
+  const agent = useSelector((state) => state.agent);
 
   //fetch conversations
   useEffect(() => {
-    if (agents) {
+    if (agent) {
       const fetchConversations = async () => {
-        const response = await fetch(
-          `/api/agents/${agents[0]._id}/conversations`
-        );
+        const response = await fetch(`/api/agents/${agent._id}/conversations`);
         const json = await response.json();
         if (response.ok) {
           setConversations(json);
@@ -43,18 +31,21 @@ const ChatInterface = () => {
       };
       fetchConversations();
     }
-  }, [agents]);
+  }, [agent]);
 
   return (
     <>
       <Navbar path={"/"} page={"Setting Page"} />
-
-      <div className="chat-Interface">
-        <h3 className="chat-Interface-header">Customers</h3>
-        {<ConversationPanel conversations={conversations} />}
-        <ChatBox messages={messages} />
-        <ChatBar />
-      </div>
+      {agent ? (
+        <div className="chat-Interface">
+          <h3 className="chat-Interface-header">Customers</h3>
+          {<ConversationPanel conversations={conversations} />}
+          <ChatBox messages={messages} />
+          <ChatBar />
+        </div>
+      ) : (
+        <AgentLogin />
+      )}
     </>
   );
 };

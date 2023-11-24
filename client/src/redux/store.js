@@ -1,7 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
+import rootReducer from "./agentSlice";
 
 const store = configureStore({
-  reducer: {},
+  reducer: rootReducer,
 });
 
 export default store;
