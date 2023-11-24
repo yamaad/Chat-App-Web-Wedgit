@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { SlArrowRight } from "react-icons/sl";
-import "./index.css";
+import "./Navbar.css";
 
 const Navbar = ({ path, page }) => {
   return (

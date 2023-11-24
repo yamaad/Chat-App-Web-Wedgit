@@ -1,0 +1,26 @@
+.conversation {
+  border-radius: 4px;
+  border-left: solid 5px gray;
+  border-right: solid 5px gray;
+  margin: 7px 5px 7px 5px;
+  padding: 2px 0 2px 20px;
+  cursor: pointer;
+  color: gray;
+ 
+}
+.conversation:hover{
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.09);
+}
+.conversation.active {
+  border-left: solid 5px var(--green);
+  border-right: solid 5px var(--green);
+}
+.conversation p{
+  margin: 0;
+  
+}
+p strong{
+  color: black;
+}
+
+

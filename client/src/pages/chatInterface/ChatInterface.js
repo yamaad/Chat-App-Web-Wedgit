@@ -34,7 +34,7 @@ const ChatInterface = () => {
     if (agents) {
       const fetchConversations = async () => {
         const response = await fetch(
-          `/api/agents/${agents[1]._id}/conversations`
+          `/api/agents/${agents[0]._id}/conversations`
         );
         const json = await response.json();
         if (response.ok) {
