@@ -1,5 +1,5 @@
 {
-  "proxy": "http://localhost:4000",
+  "proxy": "https://chat-app-server-6aa6e1a669d0.herokuapp.com",
   "name": "client",
   "version": "0.1.0",
   "private": true,
