@@ -7,22 +7,26 @@ import "./ChatInterface.css";
 import { AgentLogin } from "../../components/agentLogin/AgentLogin";
 import { useSelector } from "react-redux";
 
-const messages = null; //TODO
 const ChatInterface = () => {
   const [conversations, setConversations] = useState(null);
-  const agent = useSelector((state) => state.agent);
+  const agent = useSelector((state) => state.agent).agent;
 
   //TODO fetch conversations
   useEffect(() => {
     if (agent) {
-      const fetchConversations = async () => {
-        const response = await fetch(`/api/agents/${agent._id}/conversations`);
-        const json = await response.json();
-        if (response.ok) {
-          setConversations(json);
-        }
-      };
-      fetchConversations();
+      try {
+        const fetchConversations = async () => {
+          const response = await fetch(`/api/conversations/${agent._id}`);
+          const json = await response.json();
+          if (response.ok) {
+            setConversations(json);
+          }
+        };
+
+        fetchConversations();
+      } catch (error) {
+        console.error("Error fetching conversation data", error);
+      }
     }
   }, [agent]);
 
@@ -33,7 +37,7 @@ const ChatInterface = () => {
         <div className="chat-Interface">
           <h3 className="chat-Interface-header">Customers</h3>
           {<ConversationPanel conversations={conversations} />}
-          <ChatBox messages={messages} />
+          <ChatBox />
           <ChatBar />
         </div>
       ) : (

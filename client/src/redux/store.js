@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import rootReducer from "./agentSlice";
+import rootReducer from "./index";
 
 const store = configureStore({
   reducer: rootReducer,

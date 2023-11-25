@@ -1,4 +1,6 @@
 .chat-box {
+  padding: 10px;
+  align-content: start;
   overflow: auto;
   display: grid;
   grid-row-start: 2;

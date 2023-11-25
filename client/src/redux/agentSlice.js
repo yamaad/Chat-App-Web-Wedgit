@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-const initialState = {
-  agent: null,
-};
+const initialState = { agent: null };
 const agentSlice = createSlice({
   name: "agent",
   initialState,

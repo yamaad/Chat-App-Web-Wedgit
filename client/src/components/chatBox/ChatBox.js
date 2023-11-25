@@ -1,6 +1,8 @@
+import { useSelector } from "react-redux";
 import Message from "../message/Message";
 import "./ChatBox.css";
-const ChatBox = ({ messages }) => {
+const ChatBox = () => {
+  const messages = useSelector((state) => state.messages).messages;
   return (
     <div className="chat-box">
       {messages &&

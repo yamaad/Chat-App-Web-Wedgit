@@ -1,10 +1,10 @@
 import "./Message.css";
 const Message = ({ message }) => {
-  const sender = message.sender ? "agent" : "costumer";
+  const sender = message.is_agent_message ? "agent" : "costumer";
   return (
     <div className={"message-box " + sender}>
       <div className="content">{message.content}</div>
-      <div className="sent-at">{message.sentAt}</div>
+      <div className="sent-at">{message.timestamp}</div>
     </div>
   );
 };
