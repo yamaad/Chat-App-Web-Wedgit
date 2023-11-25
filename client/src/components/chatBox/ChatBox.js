@@ -20,17 +20,19 @@ const ChatBox = () => {
       console.error("Error fetching customer data", error);
     }
   };
+
   useEffect(() => {
     if (conversation) {
       fetchChat();
     }
-  }, [conversation, messages]);
+  }, [conversation]);
   // Use useEffect to scroll to the bottom when messages change
   useEffect(() => {
     if (chatBoxRef.current) {
       chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
     }
   }, [messages]);
+
   return (
     <div className="chat-box" ref={chatBoxRef}>
       {messages &&
