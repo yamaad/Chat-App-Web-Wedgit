@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import "./Conversation.css";
-import { useDispatch, useSelector } from "react-redux";
-import { setMessages } from "../../redux/messagesSlice";
+import { useDispatch } from "react-redux";
+import { setConversation } from "../../redux/conversationSlice";
 const Conversation = ({ conversation }) => {
   const [customer, setCustomer] = useState(null);
   const activeConversation = conversation.is_active ? "active" : "";
   const dispatch = useDispatch();
-  const messages = useSelector((state) => state.messages).messages;
 
   //fetch customers
   useEffect(() => {
@@ -25,33 +24,24 @@ const Conversation = ({ conversation }) => {
     fetchCustomer();
   }, [conversation]);
 
-  //fetch chat history
-  const fetchChat = async () => {
-    try {
-      const response = await fetch(`/api/messages/${conversation._id}`);
-      if (response.ok) {
-        const messagesData = await response.json();
-        dispatch(setMessages(messagesData));
-      }
-    } catch (error) {
-      console.error("Error fetching customer data", error);
-    }
+  const handleConversationClick = () => {
+    dispatch(setConversation(conversation));
   };
 
   return (
-    <div
-      className={"conversation " + activeConversation}
-      onClick={async () => fetchChat()}
-    >
+    <>
       {customer && (
-        <>
+        <div
+          className={"conversation " + activeConversation}
+          onClick={handleConversationClick}
+        >
           <p>
             <strong>{customer.name}</strong>
           </p>
           <p>{conversation.end_time ?? conversation.start_time}</p>
-        </>
+        </div>
       )}
-    </div>
+    </>
   );
 };
 

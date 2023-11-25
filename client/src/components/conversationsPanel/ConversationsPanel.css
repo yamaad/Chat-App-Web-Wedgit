@@ -7,5 +7,7 @@
   grid-column-start: 1;
   grid-column-end: 2;
   justify-self: stretch;
-  border-style: solid;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.329);
+  border-left: 1px solid rgba(128, 128, 128, 0.16);
+  box-shadow: 15px -7px 25px -5px rgba(0,0,0,0.16);
 }

@@ -47,6 +47,7 @@ export const AgentLogin = () => {
       </label>
       <input
         type="text"
+        className="agent-login-input"
         onChange={(event) => setUsename(event.target.value)}
         value={username}
       />

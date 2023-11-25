@@ -6,10 +6,10 @@
   box-shadow: 0 0 20px rgba(0,0,0,0.09);
   border-radius: 10px;
 }
-label, input {
+label, .agent-login-input {
   display: block;
 }
-input {
+.agent-login-input {
   padding: 10px;
   margin:  10px auto;
   border: 1px solid #ddd;
