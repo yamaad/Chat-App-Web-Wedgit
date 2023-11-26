@@ -16,7 +16,9 @@ const ChatInterface = () => {
     if (agent) {
       try {
         const fetchConversations = async () => {
-          const response = await fetch(`/api/conversations/${agent._id}`);
+          const response = await fetch(
+            process.env.REACT_APP_API_URL + `/api/conversations/${agent._id}`
+          );
           const json = await response.json();
           if (response.ok) {
             setConversations(json);

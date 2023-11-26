@@ -1,6 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 const userManagementRoutes = require("./routes/userManagement");
 const conversationManagementRoutes = require("./routes/conversationManagement");
@@ -8,7 +9,11 @@ const agentManagementRoutes = require("./routes/agentManagement");
 const messageManagementRoutes = require("./routes/messageManagement");
 
 const app = express();
-//  middleware
+
+//middleware
+//   cors middleware 
+app.use(cors());
+//   logging middleware 
 app.use((req, res, next) => {
   console.log(`Request: ${req.method} ${req.path}`);
 
@@ -23,10 +28,9 @@ app.use((req, res, next) => {
 
   next();
 });
-// middle for post requests
+//   json middleware
 app.use(express.json());
-
-//routes
+//   routes middlewares
 app.use("/api/users", userManagementRoutes);
 app.use("/api/conversations", conversationManagementRoutes);
 app.use("/api/agents", agentManagementRoutes);

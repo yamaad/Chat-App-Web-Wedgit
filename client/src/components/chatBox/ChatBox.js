@@ -11,7 +11,9 @@ const ChatBox = () => {
   //fetch chat history
   const fetchChat = async () => {
     try {
-      const response = await fetch(`/api/messages/${conversation._id}`);
+      const response = await fetch(
+        process.env.REACT_APP_API_URL + `/api/messages/${conversation._id}`
+      );
       if (response.ok) {
         const messagesData = await response.json();
         dispatch(setMessages(messagesData));

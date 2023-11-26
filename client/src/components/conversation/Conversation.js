@@ -11,7 +11,9 @@ const Conversation = ({ conversation }) => {
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
-        const response = await fetch(`/api/users/${conversation.user_id}`);
+        const response = await fetch(
+          process.env.REACT_APP_API_URL + `/api/users/${conversation.user_id}`
+        );
 
         if (response.ok) {
           const customerData = await response.json();

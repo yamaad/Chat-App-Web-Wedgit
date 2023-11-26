@@ -18,13 +18,16 @@ const ChatBar = () => {
         is_agent_message: true,
       };
       try {
-        const sendMessageResponse = await fetch("/api/messages", {
-          method: "POST",
-          body: JSON.stringify(request),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const sendMessageResponse = await fetch(
+          process.env.REACT_APP_API_URL + "/api/messages",
+          {
+            method: "POST",
+            body: JSON.stringify(request),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         const json = await sendMessageResponse.json();
         if (sendMessageResponse.ok) {
           dispatch(setMessages([...messages, json]));
