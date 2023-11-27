@@ -10,19 +10,20 @@ const Conversation = ({ conversation }) => {
   //fetch customers
   useEffect(() => {
     const fetchCustomer = async () => {
-      try {
-        const response = await fetch(
-          process.env.REACT_APP_API_URL + `/api/users/${conversation.user_id}`
-        );
+          try {
+            const response = await fetch(
+              process.env.REACT_APP_API_URL +
+                `/api/users/${conversation.user_id}`
+            );
 
-        if (response.ok) {
-          const customerData = await response.json();
-          setCustomer(customerData);
-        }
-      } catch (error) {
-        console.error("Error fetching customer data", error);
-      }
-    };
+            if (response.ok) {
+              const customerData = await response.json();
+              setCustomer(customerData);
+            }
+          } catch (error) {
+            console.error("Error fetching customer data", error);
+          }
+        };
     fetchCustomer();
   }, [conversation]);
 

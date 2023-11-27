@@ -8,26 +8,28 @@ const ChatBox = () => {
   const messages = useSelector((state) => state.messages).messages;
   const conversation = useSelector((state) => state.conversation).conversation;
   const chatBoxRef = useRef(null);
-  //fetch chat history
-  const fetchChat = async () => {
-    try {
-      const response = await fetch(
-        process.env.REACT_APP_API_URL + `/api/messages/${conversation._id}`
-      );
-      if (response.ok) {
-        const messagesData = await response.json();
-        dispatch(setMessages(messagesData));
-      }
-    } catch (error) {
-      console.error("Error fetching customer data", error);
-    }
-  };
 
   useEffect(() => {
     if (conversation) {
+      //fetch chat history
+      const fetchChat = async () => {
+        try {
+          const response = await fetch(
+            process.env.REACT_APP_API_URL + `/api/messages/${conversation._id}`
+          );
+          if (response.ok) {
+            const messagesData = await response.json();
+            dispatch(setMessages(messagesData));
+          }
+        } catch (error) {
+          console.error("Error fetching customer data", error);
+        }
+      };
+
       fetchChat();
     }
-  }, [conversation]);
+  }, [conversation, dispatch]);
+
   // Use useEffect to scroll to the bottom when messages change
   useEffect(() => {
     if (chatBoxRef.current) {
