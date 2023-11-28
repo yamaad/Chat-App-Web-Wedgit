@@ -6,7 +6,6 @@ const ChatBox = ({ socket, conversation }) => {
   const chatBoxRef = useRef(null);
 
   useEffect(() => {
-    console.log("messages outside", messages);
     const handleReceiveMessage = (messageData) => {
       setMessages((prevMessages) => [...prevMessages, messageData]);
     };

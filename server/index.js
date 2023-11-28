@@ -21,11 +21,11 @@ app.use((req, res, next) => {
   // Store the original res.json and res.send methods
   const originalJson = res.json;
 
-  // // Override res.json to log the response body
-  // res.json = function (body) {
-  //   console.log("Response Body:", body);
-  //   originalJson.call(this, body);
-  // };
+  // Override res.json to log the response body
+  res.json = function (body) {
+    console.log("Response Body:", body);
+    originalJson.call(this, body);
+  };
 
   next();
 });
@@ -81,21 +81,21 @@ const socketEvents = async (server) => {
 
   //connect socket
   io.on("connection", (socket) => {
-    //agent listens for new conversation
+    socket.io = io;
+    //agent listens for new conversation //TODO: change the event name
     socket.on("join_conversation", (agentId) => {
       socket.join(agentId);
     });
 
-    // initiate a conversation by customer
+    // join a conversation //TODO: change the event name
     socket.on("init_conversation", (conversation) => {
-      console.log("init_conversation:", conversation);
       socket.join(conversation._id);
       socket.to(conversation.agent_id).emit("new_conversation", conversation);
     });
 
-    //send a message from agent to customer
+    //send a message
     socket.on("send_message", (messageData) => {
-      socket
+      socket.io
         .in(messageData.conversation_id)
         .emit("receive_message", messageData);
     });

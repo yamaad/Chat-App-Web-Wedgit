@@ -9,10 +9,7 @@ const ChatWindow = ({ isOpen }) => {
   const [user, setUser] = useState(null);
   const [conversation, setConversation] = useState(null);
   useEffect(() => {
-    console.log("Current conversation:", conversation);
-
     if (conversation) {
-      console.log("init_conversation");
       socket.emit("init_conversation", conversation);
     }
   }, [conversation]);

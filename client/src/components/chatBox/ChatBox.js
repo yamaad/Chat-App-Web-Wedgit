@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../message/Message";
 import "./ChatBox.css";
-import { setMessages } from "../../redux/messagesSlice";
+import { addMessage, setMessages } from "../../redux/messagesSlice";
 import { useEffect, useRef } from "react";
 const ChatBox = ({ socket }) => {
   const dispatch = useDispatch();
@@ -10,13 +10,20 @@ const ChatBox = ({ socket }) => {
   const chatBoxRef = useRef(null);
 
   useEffect(() => {
-    console.log("useEffect on receive_message");
-
-    socket.on("receive_message", (messageData) => {
-      console.log(messageData);
-      setMessages([...messages, messageData]);
-    });
-  }, [socket]);
+    const handleReceiveMessage = (messageData) => {
+      if (conversation && messageData.conversation_id === conversation._id) {
+        dispatch(addMessage(messageData));
+      } else {
+        //TODO: update unread messages
+        //TODO: push that conversation to the top
+        //TODO: style the selected messages
+      }
+    };
+    socket.on("receive_message", handleReceiveMessage);
+    return () => {
+      socket.off("receive_message", handleReceiveMessage);
+    };
+  }, [socket, dispatch, conversation]);
   useEffect(() => {
     if (conversation) {
       //fetch chat history

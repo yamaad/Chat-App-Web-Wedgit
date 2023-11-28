@@ -1,4 +1,5 @@
 import "./Message.css";
+import { useEffect } from "react";
 const Message = ({ message }) => {
   const sender = message.is_agent_message ? "agent" : "costumer";
   return (

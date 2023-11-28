@@ -1,14 +1,11 @@
 import { useState } from "react";
 import "./ChatBar.css";
-import { useDispatch, useSelector } from "react-redux";
-import { setMessages } from "../../redux/messagesSlice";
+import { useSelector } from "react-redux";
 import { IoSendSharp } from "react-icons/io5";
 
 const ChatBar = ({ socket }) => {
   const [messageInput, setMessageInput] = useState("");
   const conversation = useSelector((state) => state.conversation).conversation;
-  const messages = useSelector((state) => state.messages).messages;
-  const dispatch = useDispatch();
   const handleSend = async () => {
     if (messageInput && conversation) {
       const request = {
@@ -30,7 +27,6 @@ const ChatBar = ({ socket }) => {
         );
         const json = await sendMessageResponse.json();
         if (sendMessageResponse.ok) {
-          dispatch(setMessages([...messages, json]));
           await socket.emit("send_message", json);
         }
         setMessageInput("");
@@ -46,6 +42,9 @@ const ChatBar = ({ socket }) => {
         className="chat-bar-input"
         name="text"
         value={messageInput}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" && !event.shiftKey) handleSend();
+        }}
         onChange={(event) => {
           setMessageInput(event.target.value);
         }}

@@ -12,7 +12,6 @@ const ChatBar = ({ socket, conversation }) => {
         content: messageInput,
         is_agent_message: false,
       };
-      console.log("Sending message request:", request);
 
       try {
         const sendMessageResponse = await fetch(
@@ -41,6 +40,9 @@ const ChatBar = ({ socket, conversation }) => {
         className="chat-bar-input"
         name="text"
         value={messageInput}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" && !event.shiftKey) handleSend();
+        }}
         onChange={(event) => {
           setMessageInput(event.target.value);
         }}
