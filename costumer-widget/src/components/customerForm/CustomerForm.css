@@ -1,0 +1,14 @@
+.chat-form{
+  height: 100%;
+  width: 100%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  justify-content: center;
+  box-shadow: inset 0px 0px 20px -7px rgba(0, 0, 0, 0.49);
+}
+
+.chat-form input{
+  margin-bottom: 20px;
+}

@@ -1,22 +1,19 @@
 import { useState } from "react";
 import "./ChatBar.css";
-import { useDispatch, useSelector } from "react-redux";
-import { setMessages } from "../../redux/messagesSlice";
 import { IoSendSharp } from "react-icons/io5";
 
-const ChatBar = ({ socket }) => {
+const ChatBar = ({ socket, conversation }) => {
   const [messageInput, setMessageInput] = useState("");
-  const conversation = useSelector((state) => state.conversation).conversation;
-  const messages = useSelector((state) => state.messages).messages;
-  const dispatch = useDispatch();
   const handleSend = async () => {
-    if (messageInput && conversation) {
+    if (messageInput) {
       const request = {
         conversation_id: conversation._id,
         user_id: conversation.user_id,
         content: messageInput,
-        is_agent_message: true,
+        is_agent_message: false,
       };
+      console.log("Sending message request:", request);
+
       try {
         const sendMessageResponse = await fetch(
           process.env.REACT_APP_API_URL + "/api/messages",
@@ -30,7 +27,6 @@ const ChatBar = ({ socket }) => {
         );
         const json = await sendMessageResponse.json();
         if (sendMessageResponse.ok) {
-          dispatch(setMessages([...messages, json]));
           await socket.emit("send_message", json);
         }
         setMessageInput("");
@@ -42,7 +38,6 @@ const ChatBar = ({ socket }) => {
   return (
     <div className="chat-bar">
       <textarea
-        disabled={conversation ? false : true}
         className="chat-bar-input"
         name="text"
         value={messageInput}
@@ -50,11 +45,7 @@ const ChatBar = ({ socket }) => {
           setMessageInput(event.target.value);
         }}
       />
-      <button
-        disabled={conversation ? false : true}
-        className="chat-bar-button"
-        onClick={handleSend}
-      >
+      <button className="chat-bar-button" onClick={handleSend}>
         <IoSendSharp />
       </button>
     </div>

@@ -1,0 +1,17 @@
+.costumer {
+  justify-self: end;
+  background-color: lightblue;
+  border-radius: 10px 10px 0 10px;
+}
+
+.agent {
+  justify-self: start;
+  background-color: pink;
+  border-radius: 10px 10px 10px 0;
+}
+
+.message-box {
+  margin: 5px 1px 5px 1px;
+  padding: 10px;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.09);
+}

@@ -3,12 +3,20 @@ import Message from "../message/Message";
 import "./ChatBox.css";
 import { setMessages } from "../../redux/messagesSlice";
 import { useEffect, useRef } from "react";
-const ChatBox = () => {
+const ChatBox = ({ socket }) => {
   const dispatch = useDispatch();
   const messages = useSelector((state) => state.messages).messages;
   const conversation = useSelector((state) => state.conversation).conversation;
   const chatBoxRef = useRef(null);
 
+  useEffect(() => {
+    console.log("useEffect on receive_message");
+
+    socket.on("receive_message", (messageData) => {
+      console.log(messageData);
+      setMessages([...messages, messageData]);
+    });
+  }, [socket]);
   useEffect(() => {
     if (conversation) {
       //fetch chat history

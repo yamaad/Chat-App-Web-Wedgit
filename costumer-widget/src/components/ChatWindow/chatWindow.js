@@ -1,44 +1,36 @@
 import { useEffect, useState } from "react";
 import "./ChatWindow.css";
-import io from "socket.io-client";
 import CustomerForm from "../customerForm/CustomerForm";
-
-const socket = io.connect(`http://localhost:4000`);
-
-const ChatWindow = ({ isOpen, onClose }) => {
-  const [activeSession, setActiveSession] = useState(false);
-  const [message, setMessage] = useState("");
-  const [receiveMessage, setRecieveMessage] = useState("");
-
-  const sendMessage = () => {
-    socket.emit("send_message", { message });
-  };
+import ChatBox from "../chatBox/ChatBox";
+import ChatBar from "../chatBar/ChatBar";
+import io from "socket.io-client";
+const socket = io.connect(process.env.REACT_APP_API_URL);
+const ChatWindow = ({ isOpen }) => {
+  const [user, setUser] = useState(null);
+  const [conversation, setConversation] = useState(null);
   useEffect(() => {
-    socket.on("receive_message", (data) => {
-      setRecieveMessage(data.message);
-    });
-  }, [socket]);
+    console.log("Current conversation:", conversation);
+
+    if (conversation) {
+      console.log("init_conversation");
+      socket.emit("init_conversation", conversation);
+    }
+  }, [conversation]);
   return (
-    <div className={`chat-window ${isOpen ? "open" : ""}`}>
-      <div className="header">
-        <span onClick={onClose}>&times;</span>
-        <h2>Chat Window</h2>
-      </div>
-      {activeSession ? (
-        <>
-          <div>{receiveMessage}</div>
-          <input
-            placeholder="Message"
-            onChange={(event) => {
-              setMessage(event.target.value);
-            }}
-          />
-          <button onClick={sendMessage}>send</button>
-        </>
+    <div className={`chat-window ${isOpen ? "" : "close"}`}>
+      {user ? (
+        <div className="chat-window-chat">
+          {conversation && socket && (
+            <>
+              <ChatBox socket={socket} conversation={conversation} />
+              <ChatBar socket={socket} conversation={conversation} />
+            </>
+          )}
+        </div>
       ) : (
-        <>
-          <CustomerForm />
-        </>
+        <div className="chat-window-form">
+          <CustomerForm setUser={setUser} setConversation={setConversation} />
+        </div>
       )}
     </div>
   );

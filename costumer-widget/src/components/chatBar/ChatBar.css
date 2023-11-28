@@ -1,0 +1,25 @@
+.chat-bar {
+  display: grid;
+  grid-template-columns: minmax(auto, 1fr) minmax(auto, auto);
+  justify-content: start;
+  padding: 5px 0 5px 7px; 
+}
+
+.chat-bar-input {
+  border-radius: 20px;
+  padding: 15px;
+}
+.chat-bar-button  {
+  border: none;
+  color: var(--pink);
+  
+}
+.chat-bar-button svg{
+  
+  height: 70%;
+  width: auto;
+  transition: transform 0.2s ease-in-out;
+}
+.chat-bar-button:active svg {
+  transform: scale(0.9);
+}

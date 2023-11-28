@@ -71,8 +71,8 @@ const getAgentConversations = async (req, res) => {
   }
   try {
     const conversations = await Conversation.find({ agent_id: agentId }).sort({
-      end_time: 1,
-      start_time: 1,
+      end_time: -1,
+      start_time: -1,
     });
     res.status(200).json(conversations);
   } catch (error) {
