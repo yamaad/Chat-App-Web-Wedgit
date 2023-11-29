@@ -29,9 +29,13 @@ const getOnlineAgents = async (req, res) => {
 // update agents availability
 const updateAvailability = async (req, res) => {
   const { id, is_online } = req.body;
-  const agent = await Agent.findByIdAndUpdate(id, {
-    is_online,
-  });
+  const agent = await Agent.findByIdAndUpdate(
+    id,
+    {
+      is_online,
+    },
+    { new: true }
+  );
   if (!agent) {
     return res.status(400).json({ error: "no conversation found" });
   }

@@ -15,7 +15,7 @@ const ChatInterface = () => {
   const agent = useSelector((state) => state.agent).agent;
   useEffect(() => {
     if (agent) {
-      socket.emit("join_conversation", agent._id);
+      socket.emit("agent_room", agent._id);
     }
   }, [agent]);
 

@@ -16,16 +16,16 @@ const app = express();
 app.use(cors());
 //   logging middleware
 app.use((req, res, next) => {
-  console.log(`Request: ${req.method} ${req.path}`);
+  // console.log(`Request: ${req.method} ${req.path}`);
 
-  // Store the original res.json and res.send methods
-  const originalJson = res.json;
+  // // Store the original res.json and res.send methods
+  // const originalJson = res.json;
 
-  // Override res.json to log the response body
-  res.json = function (body) {
-    console.log("Response Body:", body);
-    originalJson.call(this, body);
-  };
+  // // Override res.json to log the response body
+  // res.json = function (body) {
+  //   console.log("Response Body:", body);
+  //   originalJson.call(this, body);
+  // };
 
   next();
 });
@@ -81,14 +81,15 @@ const socketEvents = async (server) => {
 
   //connect socket
   io.on("connection", (socket) => {
+    console.log("socket connect ", socket.id, socket.connected);
     socket.io = io;
-    //agent listens for new conversation //TODO: change the event name
-    socket.on("join_conversation", (agentId) => {
+    //to update agent if new customer started a conversation
+    socket.on("agent_room", (agentId) => {
       socket.join(agentId);
     });
 
-    // join a conversation //TODO: change the event name
-    socket.on("init_conversation", (conversation) => {
+    // join a conversation
+    socket.on("join_conversation", (conversation) => {
       socket.join(conversation._id);
       socket.to(conversation.agent_id).emit("new_conversation", conversation);
     });

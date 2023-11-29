@@ -10,7 +10,7 @@ const ChatWindow = ({ isOpen }) => {
   const [conversation, setConversation] = useState(null);
   useEffect(() => {
     if (conversation) {
-      socket.emit("init_conversation", conversation);
+      socket.emit("join_conversation", conversation);
     }
   }, [conversation]);
   return (

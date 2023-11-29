@@ -8,7 +8,7 @@ const ConversationPanel = ({ conversations, socket, setConversations }) => {
     if (conversations) {
       conversations.map((conversation) => {
         if (conversation.is_active) {
-          socket.emit("init_conversation", conversation);
+          socket.emit("join_conversation", conversation);
         }
       });
     }
@@ -16,7 +16,7 @@ const ConversationPanel = ({ conversations, socket, setConversations }) => {
   useEffect(() => {
     //listen for new conversation
     const handleNewConversation = (conversation) => {
-      socket.emit("init_conversation", conversation);
+      socket.emit("join_conversation", conversation);
       setConversations((prevConversations) => [
         conversation,
         ...prevConversations,

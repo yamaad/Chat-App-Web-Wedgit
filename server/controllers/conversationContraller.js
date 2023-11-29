@@ -50,10 +50,14 @@ const endConversation = async (req, res) => {
     return res.status(404).json({ error: "No valid id" });
   }
   try {
-    const conversation = await Conversation.findByIdAndUpdate(conversationId, {
-      end_time: new Date(),
-      is_active: false,
-    });
+    const conversation = await Conversation.findByIdAndUpdate(
+      conversationId,
+      {
+        end_time: new Date(),
+        is_active: false,
+      },
+      { new: true }
+    );
     if (!conversation) {
       return res.status(400).json({ error: "no conversation found" });
     }
@@ -71,8 +75,8 @@ const getAgentConversations = async (req, res) => {
   }
   try {
     const conversations = await Conversation.find({ agent_id: agentId }).sort({
-      end_time: -1,
       start_time: -1,
+      end_time: -1,
     });
     res.status(200).json(conversations);
   } catch (error) {
