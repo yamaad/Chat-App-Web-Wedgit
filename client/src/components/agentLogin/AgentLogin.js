@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export const AgentLogin = () => {
   const dispatch = useDispatch();
-  const [username, setUsename] = useState("");
+  const [username, setUsername] = useState("");
   const [error, setError] = useState("");
 
   const handleAgentLogin = async () => {
@@ -29,7 +29,7 @@ export const AgentLogin = () => {
       console.log("error: ", error);
       setError(error);
     }
-    setUsename("");
+    setUsername("");
   };
 
   return (
@@ -52,7 +52,7 @@ export const AgentLogin = () => {
       <input
         type="text"
         className="agent-login-input"
-        onChange={(event) => setUsename(event.target.value)}
+        onChange={(event) => setUsername(event.target.value)}
         value={username}
       />
       <button onClick={handleAgentLogin}>Enter</button>

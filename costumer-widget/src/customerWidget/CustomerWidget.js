@@ -12,7 +12,7 @@ export const CustomerWidget = () => {
   return (
     <div className="customer-widget">
       customer-widget
-      <ChatBubble onClick={toggleChat} />
+      <ChatBubble onClick={toggleChat} isChatOpen={isChatOpen} />
       <ChatWindow isOpen={isChatOpen} />
     </div>
   );

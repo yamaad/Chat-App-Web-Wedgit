@@ -1,9 +1,10 @@
 import "./ChatBubble.css";
 import { RiMessengerLine } from "react-icons/ri";
-const ChatBubble = ({ onClick }) => {
+import { IoMdCloseCircle } from "react-icons/io";
+const ChatBubble = ({ onClick, isChatOpen }) => {
   return (
     <div className="chat-bubble" onClick={onClick}>
-      <RiMessengerLine />
+      {isChatOpen ? <IoMdCloseCircle /> : <RiMessengerLine />}
     </div>
   );
 };

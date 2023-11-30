@@ -70,7 +70,9 @@ const initServer = async (attempt = 1) => {
 };
 
 //socket
+//TODO: transfer this function to a new file socket.js
 const socketEvents = async (server) => {
+  const lastMessageSent = {};
   //initiate socket
   const io = socket(server, {
     cors: {
@@ -80,6 +82,7 @@ const socketEvents = async (server) => {
   });
 
   //connect socket
+  //TODO: separate them and make a function for each
   io.on("connection", (socket) => {
     console.log("socket connect ", socket.id, socket.connected);
     socket.io = io;
@@ -89,23 +92,49 @@ const socketEvents = async (server) => {
     });
 
     // join a conversation
-    socket.on("join_conversation", (conversation) => {
+    socket.on("join_conversation", async (conversation) => {
       socket.join(conversation._id);
       socket.to(conversation.agent_id).emit("new_conversation", conversation);
+      if (!lastMessageSent.hasOwnProperty(conversation._id)) {
+        lastMessageSent[conversation._id] = Date.now();
+        console.log("timer reset from join_conversation");
+      }
     });
 
     //send a message
     socket.on("send_message", (messageData) => {
+      lastMessageSent[messageData.conversation_id] = Date.now();
+      console.log("timer reset from send_message");
       socket.io
         .in(messageData.conversation_id)
         .emit("receive_message", messageData);
     });
-
     //disconnect socket
     socket.on("disconnect", () => {
       console.log("socket connection ended for user: ", socket.id);
     });
   });
+
+  setInterval(() => {
+    const now = Date.now();
+    for (const roomId in lastMessageSent) {
+      const lastActivityTime = lastMessageSent[roomId];
+      const remainingTime =
+        process.env.SESSION_TIMEOUT - (now - lastActivityTime);
+      const remainingSeconds = Math.floor(remainingTime / 1000);
+      io.in(roomId).emit("remaining_time", remainingSeconds);
+      if (now - lastActivityTime >= process.env.SESSION_TIMEOUT) {
+        console.log(`Conversation ${roomId} timed out.`);
+        // Notify room members that the conversation has ended
+        io.in(roomId).emit("end_conversation", roomId);
+        //Make all sockets in the room leave the room
+        io.in(roomId).socketsLeave(roomId);
+        // remove ended conversation from lastMessageSent
+        delete lastMessageSent[roomId];
+        console.log("after time out lastMessageSent:", lastMessageSent);
+      }
+    }
+  }, 1000);
 };
 
 // start the application

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./ChatBar.css";
 import { useSelector } from "react-redux";
 import { IoSendSharp } from "react-icons/io5";
@@ -6,8 +6,12 @@ import { IoSendSharp } from "react-icons/io5";
 const ChatBar = ({ socket }) => {
   const [messageInput, setMessageInput] = useState("");
   const conversation = useSelector((state) => state.conversation).conversation;
+  useEffect(() => {
+    console.log(conversation);
+    setMessageInput("");
+  }, [conversation]);
   const handleSend = async () => {
-    if (messageInput && conversation) {
+    if (messageInput && conversation ? conversation.is_active : conversation) {
       const request = {
         conversation_id: conversation._id,
         user_id: conversation.user_id,
@@ -38,7 +42,7 @@ const ChatBar = ({ socket }) => {
   return (
     <div className="chat-bar">
       <textarea
-        disabled={conversation ? false : true}
+        disabled={conversation ? !conversation.is_active : true}
         className="chat-bar-input"
         name="text"
         value={messageInput}
@@ -50,7 +54,7 @@ const ChatBar = ({ socket }) => {
         }}
       />
       <button
-        disabled={conversation ? false : true}
+        disabled={conversation ? !conversation.is_active : true}
         className="chat-bar-button"
         onClick={handleSend}
       >

@@ -49,7 +49,9 @@ const CustomerForm = ({ setUser, setConversation }) => {
       const user = await createUser();
       const conversation = await createConversation(user._id);
       setUser(user);
+      sessionStorage.setItem("user", JSON.stringify(user));
       setConversation(conversation);
+      sessionStorage.setItem("conversation", JSON.stringify(conversation));
     }
   };
 

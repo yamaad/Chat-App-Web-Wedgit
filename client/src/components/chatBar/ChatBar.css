@@ -13,6 +13,10 @@ padding-left: 5px;
 .chat-bar-input {
   border-radius: 20px;
   padding: 15px;
+  margin-bottom: 5px;
+}
+.chat-bar-input:disabled {
+border-color: rgba(128, 128, 128, 0.204);
 }
 .chat-bar-button  {
   border: none;
@@ -27,4 +31,10 @@ padding-left: 5px;
 }
 .chat-bar-button:active svg {
   transform: scale(0.9);
+}
+.chat-bar-button:disabled{
+  color: rgba(128, 128, 128, 0.272);
+}
+.chat-bar-button:disabled:active svg{
+  transform: none;
 }

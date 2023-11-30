@@ -4,15 +4,30 @@ import CustomerForm from "../customerForm/CustomerForm";
 import ChatBox from "../chatBox/ChatBox";
 import ChatBar from "../chatBar/ChatBar";
 import io from "socket.io-client";
-const socket = io.connect(process.env.REACT_APP_API_URL);
+
 const ChatWindow = ({ isOpen }) => {
-  const [user, setUser] = useState(null);
-  const [conversation, setConversation] = useState(null);
+  const [socket, setSocket] = useState(null);
+  const [user, setUser] = useState(JSON.parse(sessionStorage.getItem("user")));
+  const [conversation, setConversation] = useState(
+    JSON.parse(sessionStorage.getItem("conversation"))
+  );
+
   useEffect(() => {
-    if (conversation) {
-      socket.emit("join_conversation", conversation);
+    if (!socket) {
+      setSocket(socket ?? io.connect(process.env.REACT_APP_API_URL));
     }
-  }, [conversation]);
+    if (conversation && socket) {
+      socket.emit("join_conversation", conversation);
+      socket.on("end_conversation", handleSessionEnd);
+    }
+  }, [conversation, socket]);
+
+  const handleSessionEnd = () => {
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("conversation");
+    setUser(null);
+    setConversation(null);
+  };
   return (
     <div className={`chat-window ${isOpen ? "" : "close"}`}>
       {user ? (
