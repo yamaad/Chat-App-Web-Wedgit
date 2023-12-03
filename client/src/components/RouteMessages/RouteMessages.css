@@ -1,11 +1,40 @@
+
+.route-messages{
+  display: flex;
+  flex-direction: column;
+}
 .chatbot-inputs{
   display: flex;
-justify-content: flex-start;
+  margin-left: 15px;
 }
-.chatbot-inputs h3{
-  margin-bottom: 0;
+.route-messages-form div h3{
+  display: flex;
+  gap: 10px;
+  margin-bottom: 5px;
 }
-.settings .chatbot-inputs{
+.route-messages-form {
+  margin: 10px auto ;
+  border: 1px solid;
+  display: flex;
+  flex-direction: column;
+}
+.route-messages-form button{
+background-color: var(--pink);
+border-color: white;
+color: white;
+  border-radius: 15px ;
+  display: flex;
+  align-self: flex-end;
+margin: 5px;
+padding: 10px 50px;
+}
+.route-messages-form button:disabled{
+  background-color: #f1f1f1;
+border:solid 1px rgba(128, 128, 128, 0.5);
+color: rgba(128, 128, 128, 0.5);
+}
+.chatbot-inputs{
+
   padding-top: 0;
 }
  .chatbot-inputs> label {
@@ -17,4 +46,13 @@ justify-content: flex-start;
 .chatbot-inputs input{
 display: block;
 width: 100%;
+}
+.available-agents{
+  align-self: center;
+  text-align: center;
+}
+.available-agents div{
+  align-self: center;
+  text-align: center;
+color: red;
 }

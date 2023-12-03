@@ -3,148 +3,103 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const socket = require("socket.io");
-
-const userManagementRoutes = require("./routes/userManagement");
-const conversationManagementRoutes = require("./routes/conversationManagement");
-const agentManagementRoutes = require("./routes/agentManagement");
-const messageManagementRoutes = require("./routes/messageManagement");
-
 const app = express();
+mongoose.connect(process.env.MONGO_URI, { dbName: "chatApp" });
+const server = app.listen(process.env.PORT, () => {
+  console.log("server is listening on", process.env.PORT);
+});
+//initiate socket
+const io = socket(server, {
+  cors: {
+    origin: [process.env.CLIENT_HOST_URL, process.env.CUSTOMER_HOST_URL],
+    methods: ["GET", "POST"],
+  },
+});
+app.set("io", io);
+const userRoutes = require("./src/routes/userRouter");
+const conversationRoutes = require("./src/routes/conversationRouter");
+const agentRoutes = require("./src/routes/agentRouter");
+const messageRoutes = require("./src/routes/messageRouter");
+const organizationRoutes = require("./src/routes/organizationRouter");
 
 //middleware
 //   cors middleware
 app.use(cors());
 //   logging middleware
 app.use((req, res, next) => {
-  // console.log(`Request: ${req.method} ${req.path}`);
+  console.log(`Request: ${req.method} ${req.path}`);
 
-  // // Store the original res.json and res.send methods
-  // const originalJson = res.json;
+  // Store the original res.json and res.send methods
+  const originalJson = res.json;
 
-  // // Override res.json to log the response body
-  // res.json = function (body) {
-  //   console.log("Response Body:", body);
-  //   originalJson.call(this, body);
-  // };
+  // Override res.json to log the response body
+  res.json = function (body) {
+    console.log("Response Body:", body);
+    originalJson.call(this, body);
+  };
 
   next();
 });
 //   json middleware
 app.use(express.json());
 //   routes middlewares
-app.use("/api/users", userManagementRoutes);
-app.use("/api/conversations", conversationManagementRoutes);
-app.use("/api/agents", agentManagementRoutes);
-app.use("/api/messages", messageManagementRoutes);
-
-// to control recursion
-const delay = async (attempt) => {
-  const delay = Math.pow(2, attempt) * 1000;
-  console.log(`Retrying in ${delay / 1000} seconds...`);
-  await new Promise((resolve) => setTimeout(resolve, delay));
-};
-//connect to DB
-const connectDB = async (attempt = 1) => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI, { dbName: "chatApp" });
-  } catch (error) {
-    console.error(
-      `Connecting to db attempt#${attempt} failed, Error: ${error}`
-    );
-    await delay(attempt);
-    return connectDB(attempt + 1);
-  }
-};
-//initiate Express server
-const initServer = async (attempt = 1) => {
-  try {
-    const server = app.listen(process.env.PORT, () => {
-      console.log("server is listening on", process.env.PORT);
-    });
-    return server;
-  } catch (error) {
-    console.error(`starting server attempt#${attempt} failed, Error: ${error}`);
-    await delay(attempt);
-    return initServer(attempt + 1);
-  }
-};
-
+app.use("/api/users", userRoutes);
+app.use("/api/conversations", conversationRoutes);
+app.use("/api/agents", agentRoutes);
+app.use("/api/messages", messageRoutes);
+app.use("/api/organizations", organizationRoutes);
 //socket
 //TODO: transfer this function to a new file socket.js
-const socketEvents = async (server) => {
-  const lastMessageSent = {};
-  //initiate socket
-  const io = socket(server, {
-    cors: {
-      origin: [process.env.CLIENT_HOST_URL, process.env.CUSTOMER_HOST_URL],
-      methods: ["GET", "POST"],
-    },
+const lastMessageSent = {};
+//connect socket
+//TODO: separate them and make a function for each
+io.on("connection", (socket) => {
+  socket.io = io;
+
+  //to update agent if new customer started a conversation
+  socket.on("agent_room", (agentId) => {
+    socket.join(agentId);
   });
-
-  //connect socket
-  //TODO: separate them and make a function for each
-  io.on("connection", (socket) => {
-    console.log("socket connect ", socket.id, socket.connected);
-    socket.io = io;
-    //to update agent if new customer started a conversation
-    socket.on("agent_room", (agentId) => {
-      socket.join(agentId);
-    });
-
-    // join a conversation
-    socket.on("join_conversation", async (conversation) => {
-      socket.join(conversation._id);
-      socket.to(conversation.agent_id).emit("new_conversation", conversation);
-      if (!lastMessageSent.hasOwnProperty(conversation._id)) {
-        lastMessageSent[conversation._id] = Date.now();
-        console.log("timer reset from join_conversation");
-      }
-    });
-
-    //send a message
-    socket.on("send_message", (messageData) => {
-      lastMessageSent[messageData.conversation_id] = Date.now();
-      console.log("timer reset from send_message");
-      socket.io
-        .in(messageData.conversation_id)
-        .emit("receive_message", messageData);
-    });
-    //disconnect socket
-    socket.on("disconnect", () => {
-      console.log("socket connection ended for user: ", socket.id);
-    });
-  });
-
-  setInterval(() => {
-    const now = Date.now();
-    for (const roomId in lastMessageSent) {
-      const lastActivityTime = lastMessageSent[roomId];
-      const remainingTime =
-        process.env.SESSION_TIMEOUT - (now - lastActivityTime);
-      const remainingSeconds = Math.floor(remainingTime / 1000);
-      io.in(roomId).emit("remaining_time", remainingSeconds);
-      if (now - lastActivityTime >= process.env.SESSION_TIMEOUT) {
-        console.log(`Conversation ${roomId} timed out.`);
-        // Notify room members that the conversation has ended
-        io.in(roomId).emit("end_conversation", roomId);
-        //Make all sockets in the room leave the room
-        io.in(roomId).socketsLeave(roomId);
-        // remove ended conversation from lastMessageSent
-        delete lastMessageSent[roomId];
-        console.log("after time out lastMessageSent:", lastMessageSent);
-      }
+  // join a conversation
+  socket.on("join_conversation", (conversation) => {
+    socket.join(conversation._id);
+    socket.to(conversation.agent_id).emit("new_conversation", conversation);
+    if (!lastMessageSent.hasOwnProperty(conversation._id)) {
+      lastMessageSent[conversation._id] = Date.now();
     }
-  }, 1000);
-};
+    console.log("join_conversation");
+  });
 
-// start the application
-const initApp = async () => {
-  console.log("Connecting to db...");
-  await connectDB();
-  console.log("Connecting to db succeed");
-  console.log("starting server...");
-  const server = await initServer();
-  socketEvents(server);
-};
+  //send a message
+  socket.on("receive_message", (messageData) => {
+    lastMessageSent[messageData.conversation_id] = Date.now();
+  });
+  //disconnect socket
+  socket.on("disconnect", () => {
+    console.log("socket connection ended for user: ", socket.id);
+  });
+});
 
-initApp();
+setInterval(() => {
+  const now = Date.now();
+  for (const roomId in lastMessageSent) {
+    const lastActivityTime = lastMessageSent[roomId];
+    const remainingTime =
+      process.env.SESSION_TIMEOUT - (now - lastActivityTime);
+    const remainingSeconds = Math.floor(remainingTime / 1000);
+    io.in(roomId).emit("remaining_time", remainingSeconds);
+    if (now - lastActivityTime >= process.env.SESSION_TIMEOUT) {
+      console.log(`Conversation ${roomId} timed out.`);
+      // Notify room members that the conversation has ended
+      //TODO: fix: if client page is not open the patch request `.../api/conversations/:conversationId` will not be triggered
+      io.in(roomId).emit("end_conversation", roomId);
+      //Make all sockets in the room leave the room
+      io.in(roomId).socketsLeave(roomId);
+      // remove ended conversation from lastMessageSent
+      delete lastMessageSent[roomId];
+      console.log("after time out lastMessageSent:", lastMessageSent);
+    }
+  }
+}, 1000);
+
+

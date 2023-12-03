@@ -21,11 +21,10 @@ const messageSchema = new Schema({
     type: Date,
     required: true,
   },
-  is_agent_message: {
+  is_customer_message: {
     type: Boolean,
-    default: false,
+    default: true,
   },
-
 });
 
 const Message = mongoose.model("Message", messageSchema);

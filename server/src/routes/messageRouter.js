@@ -7,7 +7,7 @@ const {
 const router = express.Router();
 
 //Send a message in a conversation
-router.post("/", sendMessage);
+router.post("/", (req, res) => sendMessage(req, res, req.app.get("io")));
 
 //Get the message history
 router.get("/:conversationId", getChatHistory);

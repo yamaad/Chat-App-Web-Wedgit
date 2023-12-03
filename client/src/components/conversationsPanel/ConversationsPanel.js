@@ -1,8 +1,11 @@
 import Conversation from "../conversation/Conversation";
 import { useEffect } from "react";
 import "./ConversationsPanel.css";
+import { useDispatch } from "react-redux";
+import { setConversation } from "../../redux/conversationSlice";
 
 const ConversationPanel = ({ conversations, socket, setConversations }) => {
+  const dispatch = useDispatch();
   useEffect(() => {
     //listen to existing conversation
     if (conversations) {
@@ -13,6 +16,7 @@ const ConversationPanel = ({ conversations, socket, setConversations }) => {
     //listen for conversation ending
     socket.on("end_conversation", handleEndConversation);
     return () => {
+      dispatch(setConversation(null));
       socket.off("new_conversation", handleNewConversation);
       socket.off("end_conversation", handleEndConversation);
     };
@@ -70,13 +74,7 @@ const ConversationPanel = ({ conversations, socket, setConversations }) => {
     <div className="conversation-panel">
       {conversations &&
         conversations.map((conversation, index) => {
-          return (
-            <Conversation
-              key={index}
-              conversation={conversation}
-              socket={socket}
-            />
-          );
+          return <Conversation key={index} conversation={conversation} />;
         })}
     </div>
   );

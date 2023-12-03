@@ -39,11 +39,9 @@ export const AgentLogin = () => {
         {" "}
         <small>
           {" "}
-          <p>
-            ** you can use this existing username: <strong>yamaad</strong>
-          </p>
-          <p>** you can enter a unique username to create a new agent user </p>
-          <p>** you can refresh your browser to come back to this page </p>
+          <p>** check setting page for existing usernames **</p>
+          <p>** or enter a unique username to create a new agent user ** </p>
+          <p>** you can refresh your page to log out ** </p>
         </small>
       </em>
       <label>

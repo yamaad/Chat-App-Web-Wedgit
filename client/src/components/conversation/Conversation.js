@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 import "./Conversation.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setConversation } from "../../redux/conversationSlice";
-const Conversation = ({ conversation, socket }) => {
+const Conversation = ({ conversation }) => {
   const [customer, setCustomer] = useState(null);
-  const activeConversation = conversation.is_active ? "active" : "";
+  const activeClassName = conversation.is_active ? "active" : "";
+  const selectedConversation = useSelector(
+    (state) => state.conversation
+  ).conversation;
+  const [selectedClassName, setSelectedClassName] = useState("");
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    updateSelectedClassName();
+  }, [selectedConversation]);
   //fetch customers
   useEffect(() => {
     const fetchCustomer = async () => {
@@ -30,11 +37,19 @@ const Conversation = ({ conversation, socket }) => {
     dispatch(setConversation(conversation));
   };
 
+  const updateSelectedClassName = () => {
+    if (selectedConversation) {
+      selectedConversation._id === conversation._id
+        ? setSelectedClassName("selected")
+        : setSelectedClassName("");
+    }
+  };
+
   return (
     <>
       {customer && (
         <div
-          className={"conversation " + activeConversation}
+          className={`conversation ${activeClassName} ${selectedClassName}`}
           onClick={handleConversationClick}
         >
           <p>

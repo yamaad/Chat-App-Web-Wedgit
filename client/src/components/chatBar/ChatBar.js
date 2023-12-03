@@ -6,19 +6,22 @@ import { IoSendSharp } from "react-icons/io5";
 const ChatBar = ({ socket }) => {
   const [messageInput, setMessageInput] = useState("");
   const conversation = useSelector((state) => state.conversation).conversation;
+  // empty the input bar if user switch conversation
   useEffect(() => {
-    console.log(conversation);
     setMessageInput("");
   }, [conversation]);
+
+  //handle sending messages
   const handleSend = async () => {
     if (messageInput && conversation ? conversation.is_active : conversation) {
       const request = {
         conversation_id: conversation._id,
         user_id: conversation.user_id,
         content: messageInput,
-        is_agent_message: true,
+        is_customer_message: false,
       };
       try {
+        setMessageInput("");
         const sendMessageResponse = await fetch(
           process.env.REACT_APP_API_URL + "/api/messages",
           {
@@ -29,11 +32,6 @@ const ChatBar = ({ socket }) => {
             },
           }
         );
-        const json = await sendMessageResponse.json();
-        if (sendMessageResponse.ok) {
-          await socket.emit("send_message", json);
-        }
-        setMessageInput("");
       } catch (error) {
         console.error("Error sending message:", error);
       }

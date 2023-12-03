@@ -1,11 +1,9 @@
 import RouteMessages from "../../components/RouteMessages/RouteMessages";
-import Navbar from "../../components/navbar/Navbar";
-
+import "./setting.css";
 const Setting = () => {
   return (
     <>
-      <Navbar path={"/chatInterface"} page={"Chat Page"} />
-      <div className="Setting">
+      <div className="setting">
         <RouteMessages />
       </div>
     </>
