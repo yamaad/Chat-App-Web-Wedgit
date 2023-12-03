@@ -3,7 +3,7 @@ import "./ChatBar.css";
 import { useSelector } from "react-redux";
 import { IoSendSharp } from "react-icons/io5";
 
-const ChatBar = ({ socket }) => {
+const ChatBar = () => {
   const [messageInput, setMessageInput] = useState("");
   const conversation = useSelector((state) => state.conversation).conversation;
   // empty the input bar if user switch conversation
@@ -22,16 +22,13 @@ const ChatBar = ({ socket }) => {
       };
       try {
         setMessageInput("");
-        const sendMessageResponse = await fetch(
-          process.env.REACT_APP_API_URL + "/api/messages",
-          {
-            method: "POST",
-            body: JSON.stringify(request),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        await fetch(process.env.REACT_APP_API_URL + "/api/messages", {
+          method: "POST",
+          body: JSON.stringify(request),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
       } catch (error) {
         console.error("Error sending message:", error);
       }

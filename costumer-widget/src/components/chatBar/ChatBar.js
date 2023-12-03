@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./ChatBar.css";
 import { IoSendSharp } from "react-icons/io5";
 
-const ChatBar = ({ socket, conversation }) => {
+const ChatBar = ({ conversation }) => {
   const [messageInput, setMessageInput] = useState("");
   const handleSend = async () => {
     if (messageInput) {
@@ -10,25 +10,18 @@ const ChatBar = ({ socket, conversation }) => {
         conversation_id: conversation._id,
         user_id: conversation.user_id,
         content: messageInput,
-        is_agent_message: false,
+        is_customer_message: true,
       };
 
       try {
-        const sendMessageResponse = await fetch(
-          process.env.REACT_APP_API_URL + "/api/messages",
-          {
-            method: "POST",
-            body: JSON.stringify(request),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const json = await sendMessageResponse.json();
-        if (sendMessageResponse.ok) {
-          await socket.emit("send_message", json);
-        }
         setMessageInput("");
+        await fetch(process.env.REACT_APP_API_URL + "/api/messages", {
+          method: "POST",
+          body: JSON.stringify(request),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
       } catch (error) {
         console.error("Error sending message:", error);
       }
