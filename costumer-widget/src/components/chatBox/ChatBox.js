@@ -19,7 +19,7 @@ const ChatBox = ({ socket, conversation }) => {
         setTimer(time);
       });
     };
-  }, [socket]);
+  }, []); //!socket
   // Use useEffect to scroll to the bottom when messages change
   useEffect(() => {
     if (chatBoxRef.current) {
@@ -27,6 +27,7 @@ const ChatBox = ({ socket, conversation }) => {
     }
   }, [messages]);
   const handleReceiveMessage = (messageData) => {
+    socket.emit("reset_timer", messageData.conversation_id);
     setMessages((prevMessages) => [...prevMessages, messageData]);
   };
   const fetchChatHistory = async () => {
@@ -56,7 +57,7 @@ const ChatBox = ({ socket, conversation }) => {
       </div>
       {messages &&
         messages.map((message, index) => {
-          return <Message key={index} message={message} />;
+          return <Message key={message._id} message={message} />;
         })}
     </div>
   );

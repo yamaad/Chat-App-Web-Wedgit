@@ -99,7 +99,7 @@ const RouteMessages = () => {
                 type="text"
                 name="url"
                 value={chatbotURL}
-                disabled={chatOption == 1}
+                disabled={chatOption === 1}
                 onChange={(e) => setChatbotURL(e.target.value)}
               />
             </label>
@@ -109,7 +109,7 @@ const RouteMessages = () => {
                 type="text"
                 name="token"
                 value={token}
-                disabled={chatOption == 1}
+                disabled={chatOption === 1}
                 onChange={(e) => setToken(e.target.value)}
               />
             </label>
@@ -142,7 +142,7 @@ const RouteMessages = () => {
           Submit
         </button>
       </form>
-      {chatOption == 1 && (
+      {chatOption === 1 && (
         <div className="available-agents">
           <h4>Available agents username:</h4>
           {!availableAgents.length > 0 && (
@@ -157,9 +157,9 @@ const RouteMessages = () => {
             </div>
           )}
           <ul>
-            {availableAgents.map((agent, index) => {
+            {availableAgents.map((agent) => {
               return (
-                <li className="available-agent" key={index}>
+                <li className="available-agent" key={agent._id}>
                   {agent.username}
                 </li>
               );

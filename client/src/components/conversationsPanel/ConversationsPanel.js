@@ -1,11 +1,13 @@
 import Conversation from "../conversation/Conversation";
 import { useEffect } from "react";
 import "./ConversationsPanel.css";
-import { useDispatch } from "react-redux";
-import { setConversation } from "../../redux/conversationSlice";
 
-const ConversationPanel = ({ conversations, socket, setConversations }) => {
-  const dispatch = useDispatch();
+const ConversationPanel = ({
+  conversations,
+  socket,
+  setConversations,
+  fetchConversations,
+}) => {
   useEffect(() => {
     //listen to existing conversation
     if (conversations) {
@@ -15,16 +17,25 @@ const ConversationPanel = ({ conversations, socket, setConversations }) => {
     socket.on("new_conversation", handleNewConversation);
     //listen for conversation ending
     socket.on("end_conversation", handleEndConversation);
+    socket.on("receive_message", pushConversationTop);
     return () => {
-      dispatch(setConversation(null));
       socket.off("new_conversation", handleNewConversation);
       socket.off("end_conversation", handleEndConversation);
+      socket.off("receive_message", pushConversationTop);
     };
-  }, [socket, conversations]);
+  }, [conversations]); //!socket
+  const pushConversationTop = (messageData) => {
+    const filteredConversations = conversations.filter(
+      (conversation) => conversation._id !== messageData.conversation_id
+    );
+    const lastUpdatedConversation = conversations.filter(
+      (conversation) => conversation._id === messageData.conversation_id
+    );
+    setConversations([...lastUpdatedConversation, ...filteredConversations]);
+  };
   const joinConversation = () => {
     conversations.map((conversation) => {
       if (conversation.is_active) {
-        console.log("agent joined conversation  :", conversation._id);
         socket.emit("join_conversation", conversation);
       }
     });
@@ -70,11 +81,20 @@ const ConversationPanel = ({ conversations, socket, setConversations }) => {
       }
     }
   };
+  const handleScroll = (event) => {
+    if (
+      event.currentTarget.scrollTop + event.currentTarget.clientHeight ===
+      event.currentTarget.scrollHeight
+    )
+      fetchConversations();
+  };
   return (
-    <div className="conversation-panel">
+    <div className="conversation-panel" onScroll={handleScroll}>
       {conversations &&
-        conversations.map((conversation, index) => {
-          return <Conversation key={index} conversation={conversation} />;
+        conversations.map((conversation) => {
+          return (
+            <Conversation key={conversation._id} conversation={conversation} />
+          );
         })}
     </div>
   );

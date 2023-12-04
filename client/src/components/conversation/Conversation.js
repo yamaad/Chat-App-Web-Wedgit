@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import "./Conversation.css";
 import { useDispatch, useSelector } from "react-redux";
 import { setConversation } from "../../redux/conversationSlice";
+import {
+  deleteLastMessage,
+  selectLastMessages,
+} from "../../redux/lastMessageSlice";
 const Conversation = ({ conversation }) => {
   const [customer, setCustomer] = useState(null);
   const activeClassName = conversation.is_active ? "active" : "";
@@ -10,7 +14,7 @@ const Conversation = ({ conversation }) => {
   ).conversation;
   const [selectedClassName, setSelectedClassName] = useState("");
   const dispatch = useDispatch();
-
+  const lastMessages = useSelector(selectLastMessages);
   useEffect(() => {
     updateSelectedClassName();
   }, [selectedConversation]);
@@ -35,13 +39,14 @@ const Conversation = ({ conversation }) => {
 
   const handleConversationClick = () => {
     dispatch(setConversation(conversation));
+    dispatch(deleteLastMessage({ conversationId: conversation._id }));
   };
 
   const updateSelectedClassName = () => {
     if (selectedConversation) {
-      selectedConversation._id === conversation._id
-        ? setSelectedClassName("selected")
-        : setSelectedClassName("");
+      if (selectedConversation._id === conversation._id) {
+        setSelectedClassName("selected");
+      } else setSelectedClassName("");
     }
   };
 
@@ -55,7 +60,7 @@ const Conversation = ({ conversation }) => {
           <p>
             <strong>{customer.name}</strong>
           </p>
-          <p>{conversation.end_time ?? conversation.start_time}</p>
+          <p>{lastMessages[conversation._id] ?? ""}</p>
         </div>
       )}
     </>

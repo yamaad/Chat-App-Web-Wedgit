@@ -89,24 +89,19 @@ const sendMessage = async (req, res, io) => {
 // get chat history
 const getChatHistory = async (req, res) => {
   const { conversationId } = req.params;
-  const skip = parseInt(req.query.skip);
-  const limit = parseInt(req.query.limit);
-  console.log("messages skip", skip);
-  console.log("messages limit", limit);
-
+  const skip = parseInt(req.query.skip) || 0;
+  const limit = parseInt(req.query.limit) || Number.MAX_SAFE_INTEGER;
   if (!mongoose.Types.ObjectId.isValid(conversationId)) {
     return res.status(404).json({ error: "No valid id" });
   }
-  const messages = await Message.find({
-    conversation_id: conversationId,
-  }).sort({ timestamp: 1 });
-  await Message.aggregate([
+  const messages = await Message.aggregate([
     {
       $match: { conversation_id: new mongoose.Types.ObjectId(conversationId) },
     },
     { $sort: { timestamp: -1 } },
     { $skip: skip },
     { $limit: limit },
+    { $sort: { timestamp: 1 } },
   ]);
   res.status(200).json(messages);
 };

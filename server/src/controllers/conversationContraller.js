@@ -124,8 +124,6 @@ const getAgentConversations = async (req, res) => {
   const { agentId } = req.params;
   const skip = parseInt(req.query.skip);
   const limit = parseInt(req.query.limit);
-  console.log(skip);
-  console.log(limit);
   if (!mongoose.Types.ObjectId.isValid(agentId)) {
     return res.status(404).json({ error: "No valid id" });
   }

@@ -20,7 +20,11 @@ const ChatWindow = ({ isOpen }) => {
       socket.emit("join_conversation", conversation);
       socket.on("end_conversation", handleSessionEnd);
     }
-  }, [conversation, socket]);
+    if (socket)
+      return () => {
+        socket.off("end_conversation", handleSessionEnd);
+      };
+  }, [conversation]); //! , socket
 
   const handleSessionEnd = () => {
     sessionStorage.removeItem("user");
@@ -35,7 +39,7 @@ const ChatWindow = ({ isOpen }) => {
           {conversation && socket && (
             <>
               <ChatBox socket={socket} conversation={conversation} />
-              <ChatBar socket={socket} conversation={conversation} />
+              <ChatBar conversation={conversation} />
             </>
           )}
         </div>
