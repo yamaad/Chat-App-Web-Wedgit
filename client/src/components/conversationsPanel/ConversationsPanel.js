@@ -23,7 +23,7 @@ const ConversationPanel = ({
       socket.off("end_conversation", handleEndConversation);
       socket.off("receive_message", pushConversationTop);
     };
-  }, [conversations]); //!socket
+  }, [conversations]);
   const pushConversationTop = (messageData) => {
     const filteredConversations = conversations.filter(
       (conversation) => conversation._id !== messageData.conversation_id

@@ -27,17 +27,6 @@ const organizationRoutes = require("./src/routes/organizationRouter");
 app.use(cors());
 //   logging middleware
 app.use((req, res, next) => {
-  // console.log(`Request: ${req.method} ${req.path}`);
-
-  // // Store the original res.json and res.send methods
-  // const originalJson = res.json;
-
-  // // Override res.json to log the response body
-  // res.json = function (body) {
-  //   console.log("Response Body:", body);
-  //   originalJson.call(this, body);
-  // };
-
   next();
 });
 //   json middleware
@@ -49,22 +38,19 @@ app.use("/api/agents", agentRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/organizations", organizationRoutes);
 //socket
-//TODO: transfer this function to a new file socket.js
+
 const lastMessageSent = {};
 //connect socket
-//TODO: separate them and make a function for each
+
 
 io.on("connection", (socket) => {
   socket.io = io;
-  console.log("socket connected:", socket.id);
   //to update agent if new customer started a conversation
   socket.on("agent_room", (agentId) => {
-    console.log("agent_room");
     socket.join(agentId);
   });
   // join a conversation
   socket.on("join_conversation", (conversation) => {
-    console.log("join_conversation");
     socket.join(conversation._id);
     socket.to(conversation.agent_id).emit("new_conversation", conversation);
     if (!lastMessageSent.hasOwnProperty(conversation._id)) {
@@ -72,13 +58,10 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("reset_timer", (conversation_id) => {
-    console.log("reset_timer");
     lastMessageSent[conversation_id] = Date.now();
   });
   //disconnect socket
-  socket.on("disconnect", () => {
-    console.log("socket connection ended for user: ", socket.id);
-  });
+  socket.on("disconnect", () => {});
 });
 
 setInterval(() => {
@@ -90,15 +73,13 @@ setInterval(() => {
     const remainingSeconds = Math.floor(remainingTime / 1000);
     io.in(roomId).emit("remaining_time", remainingSeconds);
     if (now - lastActivityTime >= process.env.SESSION_TIMEOUT) {
-      console.log(`Conversation ${roomId} timed out.`);
       // Notify room members that the conversation has ended
-      //TODO: fix: if client page is not open the patch request `.../api/conversations/:conversationId` will not be triggered
+
       io.in(roomId).emit("end_conversation", roomId);
       //Make all sockets in the room leave the room
       io.in(roomId).socketsLeave(roomId);
       // remove ended conversation from lastMessageSent
       delete lastMessageSent[roomId];
-      console.log("after time out lastMessageSent:", lastMessageSent);
     }
   }
 }, 1000);

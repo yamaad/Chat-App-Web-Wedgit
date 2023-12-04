@@ -20,11 +20,9 @@ const getChatOption = async (req, res) => {
 // update Chat Option
 const updateChatOption = async (req, res) => {
   const { chat_option, chatbot_URL, chatbot_token } = req.body;
-  console.log("updateChatOption", req.body);
   try {
     const currentChatOption = await Organization.findOne();
     if (chatbot_URL && chatbot_token) {
-      //TODO: change: store token in a secure way
       const newChatOption = await Organization.findByIdAndUpdate(
         currentChatOption._id,
         { chat_option, chatbot_URL, chatbot_token },

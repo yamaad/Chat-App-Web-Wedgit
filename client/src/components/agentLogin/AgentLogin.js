@@ -26,7 +26,7 @@ export const AgentLogin = () => {
         dispatch(setAgent(json));
       }
     } catch (error) {
-      console.log("error: ", error);
+      console.error("unable to login/create user ,error: ", error);
       setError(error);
     }
     setUsername("");

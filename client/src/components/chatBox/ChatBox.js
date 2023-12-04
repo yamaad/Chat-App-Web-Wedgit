@@ -13,7 +13,6 @@ const ChatBox = ({ socket, conversation }) => {
 
   useEffect(() => {
     if (pushScrollDown) {
-      console.log("pushScrollDown");
       chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
       setPushScrollDown(false);
     }
@@ -58,10 +57,7 @@ const ChatBox = ({ socket, conversation }) => {
       dispatch(addMessage(messageData));
       setPushScrollDown(true);
       // scroll to bottom
-    } else {
-      //TODO: update unread messages
-      //TODO: push that conversation to the top
-    }
+    } 
   };
   const fetchChat = async () => {
     try {

@@ -16,9 +16,7 @@ const ChatInterface = () => {
   const dispatch = useDispatch();
   const [skip, setSkip] = useState(0);
   const conversation = useSelector((state) => state.conversation).conversation;
-  useEffect(() => {
-    console.log(conversations);
-  }, [conversations]);
+  useEffect(() => {}, [conversations]);
   useEffect(() => {
     return () => {
       dispatch(setConversation(null));
@@ -27,21 +25,17 @@ const ChatInterface = () => {
   }, []);
   useEffect(() => {
     if (agent) {
-      //TODO: implement this emit in the server-side
       socket.emit("agent_room", agent._id);
     }
   }, [agent, socket]);
 
   useEffect(() => {
     if (agent && skip === 0) {
-      console.log("fetch data is triggered twice", skip);
-      //! fetch data is triggered twice here check if it happens on production
       fetchConversations(0);
     }
   }, [agent]);
   const fetchConversations = async () => {
     try {
-      console.log("fetchConversations skip:", skip);
       const response = await fetch(
         process.env.REACT_APP_API_URL +
           `/api/conversations/${agent._id}?skip=${skip}&limit=15`
@@ -68,12 +62,10 @@ const ChatInterface = () => {
               fetchConversations={fetchConversations}
             />
           }
-          {/* {conversation && ( */}
           <>
             <ChatBox socket={socket} conversation={conversation} />
             <ChatBar />
           </>
-          {/* )} */}
         </div>
       ) : (
         <AgentLogin />

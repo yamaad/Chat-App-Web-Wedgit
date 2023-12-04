@@ -19,7 +19,7 @@ const ChatBox = ({ socket, conversation }) => {
         setTimer(time);
       });
     };
-  }, []); //!socket
+  }, []); 
   // Use useEffect to scroll to the bottom when messages change
   useEffect(() => {
     if (chatBoxRef.current) {
@@ -39,9 +39,7 @@ const ChatBox = ({ socket, conversation }) => {
         const messagesData = await response.json();
         setMessages(messagesData);
       }
-    } catch (error) {
-      console.log("unable to fetch chat history, Error", error);
-    }
+    } catch (error) {}
   };
   return (
     <div className="chat-box" ref={chatBoxRef}>

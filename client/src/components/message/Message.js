@@ -9,7 +9,6 @@ const Message = ({ message }) => {
   }, []);
   const formatTimestamp = () => {
     const stringDate = new Date(message.timestamp);
-    console.log(typeof message.timestamp);
     const date = stringDate.toLocaleDateString(undefined, {
       day: "2-digit",
       month: "2-digit",
