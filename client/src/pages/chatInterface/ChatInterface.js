@@ -28,10 +28,13 @@ const ChatInterface = () => {
       socket.emit("agent_room", agent._id);
     }
   }, [agent, socket]);
-
+let ignore = false;
   useEffect(() => {
     if (agent && skip === 0) {
-      fetchConversations(0);
+      if (!ignore) fetchConversations(0);
+    return () => {
+      ignore = true;
+    };
     }
   }, [agent]);
   const fetchConversations = async () => {

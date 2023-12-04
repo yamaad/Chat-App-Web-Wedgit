@@ -42,7 +42,6 @@ app.use("/api/organizations", organizationRoutes);
 const lastMessageSent = {};
 //connect socket
 
-
 io.on("connection", (socket) => {
   socket.io = io;
   //to update agent if new customer started a conversation

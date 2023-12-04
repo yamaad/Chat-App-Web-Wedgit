@@ -24,7 +24,7 @@ const ChatWindow = ({ isOpen }) => {
       return () => {
         socket.off("end_conversation", handleSessionEnd);
       };
-  }, [conversation]); 
+  }, [conversation, socket]); 
 
   const handleSessionEnd = () => {
     sessionStorage.removeItem("user");
