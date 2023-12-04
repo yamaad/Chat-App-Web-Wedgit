@@ -29,13 +29,13 @@ const ChatBox = ({ socket, conversation }) => {
     dispatch(setMessages([]));
     setSkip(0);
     if (skip === 0) {
-      fetchChat();
+      if (conversation) fetchChat();
     }
   }, [conversation]);
   useEffect(() => {
     //initial fetch chat history, render after a new conversation clicked & skip is reset to 0
     if (skip === 0) {
-      fetchChat();
+      if (conversation) fetchChat();
     }
   }, [skip]);
   useEffect(() => {
@@ -86,7 +86,7 @@ const ChatBox = ({ socket, conversation }) => {
         }
       }
     } catch (error) {
-      console.error("Error fetching customer data", error);
+      console.error("Error fetching chat history", error);
     }
   };
   const handleScroll = (event) => {

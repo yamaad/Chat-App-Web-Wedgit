@@ -20,8 +20,10 @@ const RouteMessages = () => {
         if (json.chat_option === "organizationChatbot") {
           setChatOption(0);
           setChatbotURL(json.chatbot_URL);
-        } else {
+        } else if (json.chat_option === "liveAgent") {
           setChatOption(1);
+        } else {
+          setChatOption(2);
         }
       }
     } catch (error) {
@@ -43,7 +45,11 @@ const RouteMessages = () => {
   };
   const updateChatOption = async () => {
     const chatOptionRequest =
-      chatOption === 0 ? "organizationChatbot" : "liveAgent";
+      chatOption === 0
+        ? "organizationChatbot"
+        : chatOption === 1
+        ? "liveAgent"
+        : "systemChatbot";
     const request = {
       chat_option: chatOptionRequest,
       chatbot_URL: chatbotURL,
@@ -64,8 +70,10 @@ const RouteMessages = () => {
       if (chatOptionResponse.ok) {
         if (json.chat_option === "organizationChatbot") {
           setChatOption(0);
-        } else {
+        } else if (json.chat_option === "liveAgent") {
           setChatOption(1);
+        } else {
+          setChatOption(2);
         }
       }
     } catch (error) {
@@ -99,7 +107,7 @@ const RouteMessages = () => {
                 type="text"
                 name="url"
                 value={chatbotURL}
-                disabled={chatOption === 1}
+                disabled={chatOption !== 0}
                 onChange={(e) => setChatbotURL(e.target.value)}
               />
             </label>
@@ -109,7 +117,7 @@ const RouteMessages = () => {
                 type="text"
                 name="token"
                 value={token}
-                disabled={chatOption === 1}
+                disabled={chatOption !== 0}
                 onChange={(e) => setToken(e.target.value)}
               />
             </label>
@@ -129,12 +137,25 @@ const RouteMessages = () => {
             <label htmlFor="routeToAgent">Route messages to live agents</label>
           </h3>
         </div>
-
+        <div>
+          <h3>
+            <input
+              type="radio"
+              id="routeToOpenAI"
+              name="routeOption"
+              value={2}
+              checked={chatOption === 2}
+              onChange={() => setChatOption(2)}
+            />
+            <label htmlFor="routeToAgent">Route messages to OpenAI GPT </label>
+          </h3>
+        </div>
         <button
           type="submit"
           disabled={
             (chatOption === 0 && chatbotURL && token) ||
-            (chatOption === 1 && availableAgents.length > 0)
+            (chatOption === 1 && availableAgents.length > 0) ||
+            chatOption === 2
               ? false
               : true
           }
