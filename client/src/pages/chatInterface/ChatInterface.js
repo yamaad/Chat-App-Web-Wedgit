@@ -32,11 +32,15 @@ const ChatInterface = () => {
     }
   }, [agent, socket]);
 
+  let ignore = false;
   useEffect(() => {
-    if (agent && skip === 0) {
+    if (agent && skip === 0 && conversations.length === 0) {
       console.log("fetch data is triggered twice", skip);
       //! fetch data is triggered twice here check if it happens on production
-      fetchConversations(0);
+      if (!ignore) fetchConversations(0);
+      return () => {
+        ignore = true;
+      };
     }
   }, [agent]);
   const fetchConversations = async () => {
