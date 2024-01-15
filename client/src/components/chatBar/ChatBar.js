@@ -41,6 +41,8 @@ const ChatBar = () => {
         className="chat-bar-input"
         name="text"
         value={messageInput}
+        autoFocus
+        spellCheck
         onKeyDown={(event) => {
           if (event.key === "Enter" && !event.shiftKey) handleSend();
         }}
